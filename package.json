@@ -1,0 +1,36 @@
+{
+  "name": "daily-thoughts-blog",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "new": "node scripts/new-post.mjs",
+    "import": "node scripts/import-articles.mjs",
+    "sync": "node scripts/sync.mjs",
+    "watch": "node scripts/sync.mjs --watch",
+    "watch:install": "powershell -NoProfile -File scripts/install-watcher.ps1",
+    "watch:stop": "powershell -NoProfile -File scripts/stop-watcher.ps1"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@astrojs/rss": "^4.0.19",
+    "astro": "^7.3.2",
+    "mammoth": "^1.13.0",
+    "remark-parse": "^11.0.0",
+    "remark-stringify": "^11.0.0",
+    "turndown": "^7.2.4",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.1.0",
+    "yaml": "^2.9.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "packageManager": "pnpm@11.19.0"
+}

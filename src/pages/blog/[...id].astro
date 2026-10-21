@@ -1,0 +1,20 @@
+---
+import { render } from 'astro:content';
+import { getPosts } from '../../lib/posts';
+import Layout from '../../layouts/Layout.astro';
+import { href, dateLabel } from '../../site';
+export async function getStaticPaths() { return (await getPosts()).map(post => ({ params: { id: post.id }, props: { post } })); }
+const { post } = Astro.props;
+const { Content } = await render(post);
+const asset = (url: string) => /^https?:\/\//.test(url) ? url : href(url);
+---
+<Layout title={post.data.title} description={post.data.description}>
+  <article class="reading">
+    <a class="back" href={href()}>← 返回所有记录</a>
+    <header class="article-heading"><div class="eyebrow">{dateLabel(post.data.pubDate)} {post.data.draft ? ' · 草稿，仅本地可见' : ''}</div><h1>{post.data.title}</h1><p>{post.data.description}</p><div class="post-tags">{post.data.tags.map(tag => <span>{tag}</span>)}</div></header>
+    {post.data.image && <img class="cover" src={asset(post.data.image)} alt={post.data.title} />}
+    {post.data.audio && <audio controls preload="metadata" src={asset(post.data.audio)}>你的浏览器不支持音频播放。<a href={asset(post.data.audio)}>下载音频</a></audio>}
+    <div class="prose"><Content /></div>
+    <div class="article-end">— 感谢你读到这里 —</div>
+  </article>
+</Layout>

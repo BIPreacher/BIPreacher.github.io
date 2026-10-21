@@ -1,0 +1,47 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getPosts } from '../lib/posts';
+import { href, dateLabel } from '../site';
+const posts = await getPosts();
+const tags = [...new Set(posts.flatMap(p => p.data.tags))];
+---
+<Layout>
+  <section class="hero">
+    <div class="eyebrow"><span class="dot"></span> NOTES ON EVERYDAY LIFE</div>
+    <h1>日有所思，<br />亦有所<span class="accent">记。</span></h1>
+    <p>记录日常的观察、灵感与思考。<br />把生活里的微小发现，慢慢写成自己的答案。</p>
+    <div class="hero-note">不必每次都想明白，先把此刻写下来。 <span>↙</span></div>
+    <div class="paper" aria-hidden="true"><span>给今天的一句话</span><p>在平凡的日子里，<br />收集一点<br /><em>不平凡的想法。</em></p><small>ONE DAY, ONE THOUGHT.</small></div>
+  </section>
+  <section class="journal" aria-labelledby="journal-title">
+    <div class="section-top"><h2 id="journal-title">所有记录 <small>{posts.length} 篇</small></h2><label class="search"><span>⌕</span><input id="search" type="search" placeholder="搜索标题、内容、标签…" aria-label="搜索文章" /></label></div>
+    <div class="filters" aria-label="按标签筛选"><button class="active" data-tag="" aria-pressed="true">全部</button>{tags.map(tag => <button data-tag={tag} aria-pressed="false">{tag}</button>)}</div>
+    <div class="posts">{posts.map((post, index) => <article class="post" data-search={`${post.data.title} ${post.data.description} ${post.body ?? ''} ${post.data.tags.join(' ')}`.toLocaleLowerCase()} data-tags={JSON.stringify(post.data.tags)}>
+      <div class="post-date"><time datetime={post.data.pubDate.toISOString()}>{dateLabel(post.data.pubDate)}</time><span>随笔 / {String(posts.length - index).padStart(2, '0')}</span></div>
+      <div class="post-copy"><div class="post-tags">{post.data.draft && <span class="draft">草稿 · 仅本地可见</span>}{post.data.tags.map(tag => <span>{tag}</span>)}</div><h3><a href={href(`blog/${post.id}/`)}>{post.data.title}</a></h3><p>{post.data.description}</p></div><a class="read-arrow" href={href(`blog/${post.id}/`)} aria-label={`阅读：${post.data.title}`}>↗</a>
+    </article>)}</div>
+    <p id="empty" class="empty" hidden={posts.length > 0}>还没有匹配的记录，试试其他关键词。</p>
+    <p class="endnote">把零散的思绪，留给未来的自己。 ✳</p>
+  </section>
+</Layout>
+<script>
+  const input = document.querySelector<HTMLInputElement>('#search')!;
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-tag]');
+  const posts = document.querySelectorAll<HTMLElement>('.post');
+  let tag = '';
+  function filter() {
+    let count = 0;
+    for (const post of posts) {
+      const matches = (post.dataset.search ?? '').includes(input.value.trim().toLocaleLowerCase()) && (!tag || JSON.parse(post.dataset.tags ?? '[]').includes(tag));
+      post.hidden = !matches;
+      if (matches) count++;
+    }
+    document.querySelector<HTMLElement>('#empty')!.hidden = count > 0;
+  }
+  input.addEventListener('input', filter);
+  buttons.forEach(button => button.addEventListener('click', () => {
+    tag = button.dataset.tag ?? '';
+    buttons.forEach(b => { b.classList.toggle('active', b === button); b.setAttribute('aria-pressed', String(b === button)); });
+    filter();
+  }));
+</script>
