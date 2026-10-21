@@ -7,7 +7,7 @@ if (Test-Path -LiteralPath $lockFile) {
   $watcherProcessId = [int](Get-Content -LiteralPath $lockFile -Raw)
   $watcherProcess = Get-CimInstance Win32_Process -Filter "ProcessId=$watcherProcessId"
   if ($watcherProcess -and $watcherProcess.CommandLine.Contains((Join-Path $PSScriptRoot 'sync.mjs'))) {
-    Write-Output '后台同步已在运行。'
+    Write-Output 'Blog watcher is already running.'
     return
   }
 }

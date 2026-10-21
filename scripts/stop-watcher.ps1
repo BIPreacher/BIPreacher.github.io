@@ -7,6 +7,6 @@ if (Test-Path -LiteralPath $lockFile) {
   if ($watcherProcess -and $watcherProcess.CommandLine.Contains((Join-Path $PSScriptRoot 'sync.mjs'))) {
     Stop-Process -Id $watcherProcessId
     Remove-Item -LiteralPath $lockFile
-    Write-Output '已停止本次后台同步。登录启动项保留。'
+    Write-Output 'Blog watcher stopped. Login shortcut remains installed.'
   }
 }

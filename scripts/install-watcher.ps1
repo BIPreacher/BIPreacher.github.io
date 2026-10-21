@@ -10,4 +10,4 @@ $shortcut.WorkingDirectory = Split-Path -Parent $PSScriptRoot
 $shortcut.WindowStyle = 7
 $shortcut.Save()
 & $watcherScript
-Write-Output "已启动自动发布，并添加到登录启动项：$shortcutPath"
+Write-Output "Blog watcher started. Login shortcut: $shortcutPath"
